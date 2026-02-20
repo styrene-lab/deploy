@@ -1,0 +1,13 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: styrene-docs-vault-auth
+  namespace: styrene-docs
+spec:
+  method: kubernetes
+  mount: kubernetes
+  vaultConnectionRef: vault-secrets-operator-system/vault-connection
+  kubernetes:
+    role: styrene-docs
+    serviceAccount: styrene-docs
+    tokenExpirationSeconds: 600

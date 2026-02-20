@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: styrene-docs
+  namespace: styrene-docs
+  labels:
+    app.kubernetes.io/name: styrene-docs
+spec:
+  selector:
+    app.kubernetes.io/name: styrene-docs
+  ports:
+    - port: 80
+      targetPort: http
+      name: http
