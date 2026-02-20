@@ -1,0 +1,26 @@
+# GitHub OIDC gate for docs.styrene.io (styrene realm, public tier)
+# Any GitHub account can authenticate. Metrics collected via Keycloak events.
+# SSO: users already authenticated to any styrene.io service skip login.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: oidc-docs-styrene
+  namespace: styrene-docs
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: docs-styrene
+  oidc:
+    provider:
+      issuer: https://auth.styrene.io/realms/styrene
+    clientID: envoy-gateway-styrene
+    clientSecret:
+      name: envoy-gateway-styrene-oidc-secret
+    scopes:
+      - openid
+      - profile
+      - email
+    redirectURL: https://docs.styrene.io/oauth2/callback
+    cookieDomain: styrene.io
+    refreshToken: true

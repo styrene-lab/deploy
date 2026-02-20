@@ -1,3 +1,4 @@
+# GHCR pull credentials (styrene-docs Vault role)
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
@@ -11,3 +12,38 @@ spec:
     role: styrene-docs
     serviceAccount: styrene-docs
     tokenExpirationSeconds: 600
+---
+# OIDC client secret (envoy-gateway-styrene Vault role, styrene realm)
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: envoy-gateway-styrene-vault-auth
+  namespace: styrene-docs
+spec:
+  method: kubernetes
+  mount: kubernetes
+  vaultConnectionRef: vault-secrets-operator-system/vault-connection
+  kubernetes:
+    role: envoy-gateway-styrene
+    serviceAccount: default
+    tokenExpirationSeconds: 600
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: envoy-gateway-styrene-oidc-secret
+  namespace: styrene-docs
+spec:
+  vaultAuthRef: envoy-gateway-styrene-vault-auth
+  mount: secret
+  type: kv-v2
+  path: oidc/envoy-gateway-styrene
+  destination:
+    name: envoy-gateway-styrene-oidc-secret
+    create: true
+    transformation:
+      excludeRaw: true
+      templates:
+        client-secret:
+          text: "{{ .Secrets.client_secret }}"
+  refreshAfter: 60s
