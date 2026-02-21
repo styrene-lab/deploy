@@ -35,7 +35,7 @@ spec:
 
       containers:
         - name: nginx
-          image: ghcr.io/styrene-lab/styrene-docs:sha-7e3b238f0476d1971eb9165527bb84f97b4fea60
+          image: ghcr.io/styrene-lab/styrene-docs:sha-4ec407f619a00170f7a173dc77d9d2938e28af9b
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
