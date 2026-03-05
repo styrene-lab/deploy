@@ -23,4 +23,6 @@ spec:
       - email
     redirectURL: https://docs.styrene.io/oauth2/callback
     cookieDomain: styrene.io
+    cookieConfig:
+      sameSite: Lax
     refreshToken: true
