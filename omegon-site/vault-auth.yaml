@@ -1,0 +1,14 @@
+# GHCR pull credentials (omegon-site Vault role)
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: omegon-site-vault-auth
+  namespace: omegon-site
+spec:
+  method: kubernetes
+  mount: kubernetes
+  vaultConnectionRef: vault-secrets-operator-system/vault-connection
+  kubernetes:
+    role: omegon-site
+    serviceAccount: omegon-site
+    tokenExpirationSeconds: 600
