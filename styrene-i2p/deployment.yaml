@@ -31,7 +31,7 @@ spec:
 
       containers:
         - name: gateway
-          image: ghcr.io/styrene-lab/styrene-i2p-gateway:sha-084594c299bc9e3ffffdbf111fdf751a1cc1a0b6
+          image: ghcr.io/styrene-lab/styrene-i2p-gateway:sha-428c3f453b63b3958fbd897973d6607ab5b4b740
           imagePullPolicy: Always
           ports:
             - containerPort: 7070
