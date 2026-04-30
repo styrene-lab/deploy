@@ -1,0 +1,16 @@
+# Persistent storage for I2P tunnel keypairs
+# These .dat files determine the .b32.i2p addresses — losing them means new addresses
+# BACK UP after first deploy: kubectl cp styrene-i2p/<pod>:/var/lib/i2pd/tunnels/ ./i2p-keys-backup/
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: i2p-tunnel-keys
+  namespace: styrene-i2p
+  labels:
+    app.kubernetes.io/name: styrene-i2p-gateway
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 256Mi

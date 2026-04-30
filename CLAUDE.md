@@ -12,7 +12,9 @@ GitOps deployment configs consumed by ArgoCD on the brutus K3s cluster. Changes 
 
 ```
 deploy/
-└── styrene-docs/    # Deployment config for docs.styrene.io static site
+├── omegon-site/     # Deployment config for omegon.styrene.io
+├── styrene-docs/    # Deployment config for styrene.io static site
+└── styrene-i2p/     # I2P eepsite gateway — all 6 Styrene sites over I2P
 ```
 
 ## Key Context
