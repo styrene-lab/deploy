@@ -1,0 +1,75 @@
+# styrened with i2p-proxy feature — bridges mesh traffic to i2pd
+# Runs in styrene-forge namespace alongside the i2pd molecule
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: styrened-i2p-proxy
+  namespace: styrene-forge
+  labels:
+    app.kubernetes.io/name: styrened-i2p-proxy
+    app.kubernetes.io/part-of: styrene-forge
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: styrened-i2p-proxy
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: styrened-i2p-proxy
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: styrened
+          image: ghcr.io/styrene-lab/styrened-i2p:latest
+          imagePullPolicy: Always
+          args:
+            - "--transport"
+            - "0.0.0.0:4242"
+            - "--rpc"
+            - "0.0.0.0:4243"
+          env:
+            # i2pd HTTP proxy is the i2pd service in the same namespace
+            - name: STYRENE_I2PD_ADDR
+              value: "http://i2pd.styrene-forge.svc:4444"
+          ports:
+            - containerPort: 4242
+              name: rns-transport
+            - containerPort: 4243
+              name: rpc
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/styrene
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+# Service exposes the RNS transport port so mesh clients can connect
+apiVersion: v1
+kind: Service
+metadata:
+  name: styrened-i2p-proxy
+  namespace: styrene-forge
+  labels:
+    app.kubernetes.io/name: styrened-i2p-proxy
+spec:
+  selector:
+    app.kubernetes.io/name: styrened-i2p-proxy
+  ports:
+    - port: 4242
+      targetPort: rns-transport
+      name: rns-transport
+    - port: 4243
+      targetPort: rpc
+      name: rpc
+  type: ClusterIP
