@@ -1,1 +1,7 @@
 .DS_Store
+
+# Local agent/runtime state; not cluster desired state
+.omegon/
+.flynt/
+ai/memory/
+ai/memory/facts.db*

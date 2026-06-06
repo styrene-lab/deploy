@@ -24,7 +24,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: styrened
-          image: ghcr.io/styrene-lab/styrened-i2p:latest
+          image: ghcr.io/styrene-lab/styrened-i2p:sha-ae3149c363b9da9e3cf92cd904fff33a5db16a64
           imagePullPolicy: Always
           args:
             - "--transport"
