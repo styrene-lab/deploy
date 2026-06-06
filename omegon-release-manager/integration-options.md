@@ -152,7 +152,7 @@ Prefer this progression:
 
 1. Create `styrene.release-manager-agent` in `omegon-armory/catalog/` by forking `styrene.community-agent` and updating facts/persona/secrets.
 2. Add/update Armory index generation so the bundle appears as an `agent` package with compatibility metadata.
-3. Add an Auspex overlay entry `release-manager` in the overlay ConfigMap or this GitOps repo.
-4. Extend Auspex overlay schema to include `connectors` if we want connector config represented at overlay level.
+3. Use `omegon-release-manager/armory-overlay.yaml` as the deploy-side Auspex overlay seed for preflight/review.
+4. Extend Auspex overlay schema to include `connectors` if we want connector config represented at overlay level; until then, connector selection remains in `omegon-agent.yaml` or the WebUI deploy request.
 5. Decide whether the first deployment is GitOps-applied `OmegonAgent` or WebUI/Auspex preflight-and-deploy.
 6. Move connector tokens away from broad `secretName` once Vox supports file/Secret-ref based connector auth.

@@ -1,0 +1,32 @@
+# Auspex Armory deployment overlay for the release-manager agent package.
+# This is the review/preflight input; omegon-agent.yaml is the direct GitOps fallback.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auspex-armory-overlays
+  namespace: omegon-agents
+  labels:
+    app.kubernetes.io/name: omegon-release-manager
+    app.kubernetes.io/part-of: styrene-public-agent-surface
+    auspex.styrene.sh/config: armory-overlays
+data:
+  release-manager.json: |
+    {
+      "id": "release-manager",
+      "armory": "styrene.release-manager-agent",
+      "mode": "daemon",
+      "role": "detached-service",
+      "image": "ghcr.io/styrene-lab/omegon:0.26.5",
+      "model": "openai-codex:gpt-5.5",
+      "posture": "architect",
+      "namespace": "omegon-agents",
+      "required_secrets": ["release-manager-auth-json"],
+      "optional_secrets": ["release-manager-public-connectors"],
+      "control_tls_profile": "release-manager",
+      "mesh_role": "operator",
+      "terminalTool": false,
+      "resources": {
+        "cpu": "250m",
+        "memory": "512Mi"
+      }
+    }
