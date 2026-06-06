@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: omegon-release-manager
-  labels:
-    app.kubernetes.io/name: omegon-release-manager
-    app.kubernetes.io/part-of: styrene-public-agent-surface

@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: omegon-release-manager-agent
-  namespace: omegon-release-manager
+  name: release-manager-agent-bundle
+  namespace: omegon-agents
   labels:
     app.kubernetes.io/name: omegon-release-manager
     app.kubernetes.io/component: agent-config

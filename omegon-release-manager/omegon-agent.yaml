@@ -1,0 +1,36 @@
+# Auspex owns lifecycle for deployed Omegon instances through OmegonAgent.
+# The operator reconciles this daemon into a Deployment, Service, probes,
+# control-plane metadata, and fleet/API visibility.
+apiVersion: styrene.sh/v1alpha1
+kind: OmegonAgent
+metadata:
+  name: release-manager
+  namespace: omegon-agents
+  labels:
+    app.kubernetes.io/name: omegon-release-manager
+    app.kubernetes.io/part-of: styrene-public-agent-surface
+    styrene.sh/agent-role: detached-service
+spec:
+  agent: styrene.release-manager-agent
+  mode: daemon
+  role: detached-service
+  posture: architect
+  model: openai-codex:gpt-5.5
+  image: ghcr.io/styrene-lab/omegon:0.26.5
+  terminalTool: false
+  vox:
+    connectors:
+      - discord
+      - slack
+    discord:
+      require_mention: true
+    slack: {}
+  secrets:
+    authJsonSecret: release-manager-auth-json
+    secretName: release-manager-public-connectors
+  resources:
+    cpu: 250m
+    memory: 512Mi
+  controlPlane:
+    tls:
+      enabled: false

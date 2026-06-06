@@ -1,32 +1,60 @@
-# Release-manager bot credentials. Secret material lives in Vault; this repo only declares desired bindings.
+# Optional bridge from Vault/OpenBao into the Kubernetes Secret references used
+# by the Auspex OmegonAgent. Prefer direct `spec.secrets.vault` injection once
+# the release-manager bundle no longer needs env-style connector tokens.
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
-  name: omegon-release-manager-vault-auth
-  namespace: omegon-release-manager
+  name: release-manager-vault-auth
+  namespace: omegon-agents
 spec:
   method: kubernetes
   mount: kubernetes
   vaultConnectionRef: vault-secrets-operator-system/vault-connection
   kubernetes:
     role: omegon-release-manager
-    serviceAccount: omegon-release-manager
+    serviceAccount: release-manager
     tokenExpirationSeconds: 600
 ---
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultStaticSecret
 metadata:
-  name: omegon-release-manager-secrets
-  namespace: omegon-release-manager
+  name: release-manager-auth-json
+  namespace: omegon-agents
 spec:
   type: kv-v2
   mount: secret
-  path: community/omegon-release-manager
+  path: community/omegon-release-manager/auth-json
   refreshAfter: 1h
-  vaultAuthRef: omegon-release-manager-vault-auth
+  vaultAuthRef: release-manager-vault-auth
   destination:
-    name: omegon-release-manager-secrets
+    name: release-manager-auth-json
     create: true
+    labels:
+      styrene.sh/secret-grant: release-manager-auth-json
+      app.kubernetes.io/name: omegon-release-manager
+    transformation:
+      excludeRaw: true
+      templates:
+        auth.json:
+          text: "{{ .Secrets.auth_json }}"
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: release-manager-public-connectors
+  namespace: omegon-agents
+spec:
+  type: kv-v2
+  mount: secret
+  path: community/omegon-release-manager/connectors
+  refreshAfter: 1h
+  vaultAuthRef: release-manager-vault-auth
+  destination:
+    name: release-manager-public-connectors
+    create: true
+    labels:
+      styrene.sh/secret-grant: release-manager-public-connectors
+      app.kubernetes.io/name: omegon-release-manager
     transformation:
       excludeRaw: true
       templates:
