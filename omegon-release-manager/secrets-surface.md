@@ -31,10 +31,10 @@ Control-plane metadata is exposed separately through `/api/agents/{namespace}/{n
 
 ## Current caveat
 
-The `styrene.release-manager-agent` bundle must be available to the Omegon runtime catalog. The raw ConfigMap in this directory records the intended bundle, but current Auspex operator code only auto-mounts inline catalog material for `styrene.auspex-primary`. For release-manager, use one of:
+The `styrene.release-manager-agent` bundle now exists in `omegon-armory` as source catalog material. It still must be materialized into the deployed Omegon runtime catalog. The raw ConfigMap in this directory records the intended bundle, but current Auspex operator code only auto-mounts inline catalog material for `styrene.auspex-primary`. For release-manager, use one of:
 
 1. bake the bundle into the Omegon image catalog;
-2. publish it through Armory plus an Auspex deployment overlay;
+2. publish it through Armory plus an Auspex deployment overlay and materialization step;
 3. extend the operator to mount arbitrary agent bundle ConfigMaps for non-primary agents.
 
-Until one of those exists, the `OmegonAgent` manifest is the desired orchestration shape but may not start successfully because `--agent styrene.release-manager-agent` cannot resolve the bundle.
+Until one of those materialization paths exists, the `OmegonAgent` manifest is the desired orchestration shape but may not start successfully because `--agent styrene.release-manager-agent` cannot resolve the bundle inside the pod.

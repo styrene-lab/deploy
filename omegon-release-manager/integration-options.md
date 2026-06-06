@@ -21,9 +21,9 @@ The closest existing base is `styrene.community-agent` plus bridge traits from `
 
 ## Recommended near-term path
 
-### 1. Create an Armory bundle: `styrene.release-manager-agent`
+### 1. Armory bundle: `styrene.release-manager-agent`
 
-Target shape:
+Implemented in `omegon-armory` commit `e3e02da` with this shape:
 
 ```text
 omegon-armory/catalog/styrene.release-manager-agent/
@@ -87,7 +87,7 @@ Proposed overlay:
 ```json
 {
   "id": "release-manager",
-  "armory": "agent/styrene.release-manager-agent",
+  "armory": "styrene.release-manager-agent",
   "mode": "daemon",
   "role": "detached-service",
   "image": "ghcr.io/styrene-lab/omegon:0.26.5",
@@ -109,7 +109,7 @@ Open question: Auspex's current `ArmoryDeploymentOverlay` does not model `connec
 
 `omegon-release-manager/omegon-agent.yaml` is now the right shape for GitOps desired state. Auspex should reconcile the actual Deployment/Service/probes/control-plane metadata.
 
-The remaining blocker is bundle availability: `styrene.release-manager-agent` must be in the runtime catalog or installed by the operator/package path before `omegon serve --agent styrene.release-manager-agent` can start.
+The Armory bundle now exists. The remaining runtime question is installation/materialization: deployed pods still need either an image/catalog path that contains `styrene.release-manager-agent` or an Auspex/Armory install path that materializes the bundle before `omegon serve --agent styrene.release-manager-agent` starts.
 
 ## Extensions that help
 
@@ -150,8 +150,8 @@ Prefer this progression:
 
 ## Practical next steps
 
-1. Create `styrene.release-manager-agent` in `omegon-armory/catalog/` by forking `styrene.community-agent` and updating facts/persona/secrets.
-2. Add/update Armory index generation so the bundle appears as an `agent` package with compatibility metadata.
+1. Publish/build the `styrene.release-manager-agent` Armory artifact so generated Armory API entries include an OCI ref and verification command, not only source metadata.
+2. Wire Auspex preflight/deploy to materialize the selected agent bundle for non-primary `OmegonAgent` workloads.
 3. Use `omegon-release-manager/armory-overlay.yaml` as the deploy-side Auspex overlay seed for preflight/review.
 4. Extend Auspex overlay schema to include `connectors` if we want connector config represented at overlay level; until then, connector selection remains in `omegon-agent.yaml` or the WebUI deploy request.
 5. Decide whether the first deployment is GitOps-applied `OmegonAgent` or WebUI/Auspex preflight-and-deploy.
