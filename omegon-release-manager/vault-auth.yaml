@@ -1,0 +1,42 @@
+# Release-manager bot credentials. Secret material lives in Vault; this repo only declares desired bindings.
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: omegon-release-manager-vault-auth
+  namespace: omegon-release-manager
+spec:
+  method: kubernetes
+  mount: kubernetes
+  vaultConnectionRef: vault-secrets-operator-system/vault-connection
+  kubernetes:
+    role: omegon-release-manager
+    serviceAccount: omegon-release-manager
+    tokenExpirationSeconds: 600
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: omegon-release-manager-secrets
+  namespace: omegon-release-manager
+spec:
+  type: kv-v2
+  mount: secret
+  path: community/omegon-release-manager
+  refreshAfter: 1h
+  vaultAuthRef: omegon-release-manager-vault-auth
+  destination:
+    name: omegon-release-manager-secrets
+    create: true
+    transformation:
+      excludeRaw: true
+      templates:
+        GITHUB_TOKEN:
+          text: "{{ .Secrets.github_token }}"
+        VOX_DISCORD_BOT_TOKEN:
+          text: "{{ .Secrets.vox_discord_bot_token }}"
+        VOX_SLACK_BOT_TOKEN:
+          text: "{{ .Secrets.vox_slack_bot_token }}"
+        VOX_SLACK_APP_TOKEN:
+          text: "{{ .Secrets.vox_slack_app_token }}"
+        MASTODON_ACCESS_TOKEN:
+          text: "{{ .Secrets.mastodon_access_token }}"

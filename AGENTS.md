@@ -14,9 +14,10 @@ This repo is becoming the Styrene-org-wide public-facing agent surface: agents s
 
 ```
 deploy/
-├── omegon-site/     # Deployment config for omegon.styrene.io
-├── styrene-docs/    # Deployment config for styrene.io static/docs surfaces
-└── styrene-i2p/     # I2P eepsite gateway and mesh↔I2P bridge
+├── omegon-release-manager/ # Long-running release/community manager daemon
+├── omegon-site/            # Deployment config for omegon.styrene.io
+├── styrene-docs/           # Deployment config for styrene.io static/docs surfaces
+└── styrene-i2p/            # I2P eepsite gateway and mesh↔I2P bridge
 ```
 
 ## Operating Constraints
