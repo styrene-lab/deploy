@@ -1,6 +1,6 @@
-# Optional bridge from Vault/OpenBao into the Kubernetes Secret references used
-# by the Auspex OmegonAgent. Prefer direct `spec.secrets.vault` injection once
-# the release-manager bundle no longer needs env-style connector tokens.
+# Bridge from Vault/OpenBao into the Kubernetes Secret references used by the
+# Auspex OmegonAgent. Provider auth and public connector credentials are kept
+# in Vault and materialized by VSO; raw secrets are never committed here.
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
@@ -25,7 +25,7 @@ spec:
   mount: secret
   path: community/omegon-release-manager/auth-json
   refreshAfter: 1h
-  vaultAuthRef: release-manager-vault-auth
+  vaultAuthRef: omegon-agents-vault-auth
   destination:
     name: release-manager-auth-json
     create: true
@@ -48,7 +48,7 @@ spec:
   mount: secret
   path: community/omegon-release-manager/connectors
   refreshAfter: 1h
-  vaultAuthRef: release-manager-vault-auth
+  vaultAuthRef: omegon-agents-vault-auth
   destination:
     name: release-manager-public-connectors
     create: true
@@ -58,13 +58,13 @@ spec:
     transformation:
       excludeRaw: true
       templates:
-        GITHUB_TOKEN:
+        github_token:
           text: "{{ .Secrets.github_token }}"
-        VOX_DISCORD_BOT_TOKEN:
-          text: "{{ .Secrets.vox_discord_bot_token }}"
-        VOX_SLACK_BOT_TOKEN:
-          text: "{{ .Secrets.vox_slack_bot_token }}"
-        VOX_SLACK_APP_TOKEN:
-          text: "{{ .Secrets.vox_slack_app_token }}"
-        MASTODON_ACCESS_TOKEN:
+        discord_bot_token:
+          text: "{{ .Secrets.discord_bot_token }}"
+        slack_oauth_token:
+          text: "{{ .Secrets.slack_oauth_token }}"
+        slack_socket_token:
+          text: "{{ .Secrets.slack_socket_token }}"
+        mastodon_access_token:
           text: "{{ .Secrets.mastodon_access_token }}"

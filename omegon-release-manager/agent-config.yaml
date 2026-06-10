@@ -19,12 +19,11 @@ data:
     directive = "PERSONA.md"
     badge = "release-manager"
 
-    [[extensions]]
-    name = "vox"
-    version = ">=0.3.0"
+    # Vox is disabled in the Brutus smoke lane until a current vox extension
+    # install artifact is published for the 0.26.5 runtime image.
 
     [settings]
-    model = "openai-codex:gpt-5.5"
+    model = "ollama-cloud:gpt-oss:120b-cloud"
     thinking_level = "medium"
     context_class = "clan"
     max_turns = 80
