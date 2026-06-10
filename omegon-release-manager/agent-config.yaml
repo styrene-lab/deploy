@@ -19,8 +19,9 @@ data:
     directive = "PERSONA.md"
     badge = "release-manager"
 
-    # Vox is disabled in the Brutus smoke lane until a current vox extension
-    # install artifact is published for the 0.26.5 runtime image.
+    [[extensions]]
+    name = "vox"
+    version = ">=0.1.1"
 
     [settings]
     model = "ollama-cloud:gpt-oss:120b-cloud"
