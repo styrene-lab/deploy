@@ -8,6 +8,55 @@ Run `styrene.release-manager-agent` as a durable, public-facing but tightly gove
 
 The long-term runtime should be reproducible, observable by Auspex, secret-minimized, and safe for community-facing release/posting workflows.
 
+
+## 2026-06-11 Brutus smoke progress — Vox bootstrap path
+
+The Brutus release-manager smoke lane advanced from "Vox installed" to a clear host/runtime bootstrap boundary.
+
+Completed:
+
+- `vox` now supports SDK-owned runtime configuration through `bootstrap_config`.
+  - Commit: `e2f90b8 feat(vox): accept bootstrap runtime config`
+  - Release metadata bump: `e75bb5b chore(release): bump vox to 0.1.4`
+  - Published release: `https://github.com/styrene-lab/vox/releases/tag/v0.1.4`
+  - Required Linux artifact exists: `vox-0.1.4-x86_64-unknown-linux-musl.tar.gz`
+- `auspex` now installs Vox `v0.1.4` for connector agents.
+  - Commit: `63c121f fix(operator): install vox 0.1.4`
+  - Validation: `cargo test -p auspex-operator` passed, 21 tests.
+- `omegon` has the host-side SDK/runtime contract implemented and pushed.
+  - Commit: `21406271 feat(extensions): bootstrap manifest runtime config`
+  - Adds manifest `runtime.config`, `runtime.env`, and `runtime.env_passthrough`.
+  - Delivers `bootstrap_config` before `bootstrap_secrets`, so connector config is present before secret-backed connector startup.
+  - Preserves clean extension environments; secrets still travel through `bootstrap_secrets` or mounted files, not inherited process env.
+
+Live cluster evidence before the host-image update:
+
+- The release-manager pod has the intended deploy env and mounted config:
+  - `VOX_CONFIG=/config/vox/vox.toml`
+  - `VOX_CONFIG_PATH=/config/vox`
+  - `/config/vox/vox.toml` contains `[discord]` and `[slack]` sections with file-backed token paths.
+- Current runtime image remains `ghcr.io/styrene-lab/omegon:0.26.5`, which predates `bootstrap_config` support.
+- Current Vox startup therefore still falls back to the default config path:
+  - `vox config loaded config=/workspace/.config/vox/vox.toml`
+
+Current blocker:
+
+- Omegon push CI for `21406271` is red on an unrelated settings/model-selection test:
+  - Run: `https://github.com/styrene-lab/omegon/actions/runs/27319453945`
+  - Issue: `https://github.com/styrene-lab/omegon/issues/137`
+  - Failure: `settings::tests::selector_policy_constrains_assembly_to_requested_lower_class` expects `Standard` but current inference returns `Massive`.
+- Do not work over the agents owning `settings.rs`; that file has unrelated in-flight changes.
+- No Omegon runtime tag/release/image was created from this thread.
+
+Next authorized deploy step once Omegon owners restore CI and publish an approved runtime image containing `21406271`:
+
+1. Roll `auspex-operator` so generated release-manager pods install Vox `v0.1.4`.
+2. Update the release-manager runtime image to the approved Omegon image containing `bootstrap_config` support.
+3. Reconcile/restart `OmegonAgent/release-manager`.
+4. Verify logs show Vox loading from the SDK-delivered path, expected:
+   - `vox config loaded from bootstrap_config path config=/config/vox/vox.toml`
+5. Then verify connector registration/startup for Slack and Discord without enabling unapproved publication behavior.
+
 ## Deployment lanes
 
 ### Lane A — Brutus smoke
