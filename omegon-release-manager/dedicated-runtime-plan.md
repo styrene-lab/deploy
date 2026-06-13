@@ -20,15 +20,19 @@ Completed:
   - Release metadata bump: `e75bb5b chore(release): bump vox to 0.1.4`
   - Published release: `https://github.com/styrene-lab/vox/releases/tag/v0.1.4`
   - Required Linux artifact exists: `vox-0.1.4-x86_64-unknown-linux-musl.tar.gz`
-- Vox `main` has a post-`v0.1.4` hardening series pushed and CI-green.
-  - Range: `9491778..1c63414` after tag `v0.1.4`.
-  - Latest commit: `1c63414 test(connectors): cover permissive token file degradation`
-  - CI: `https://github.com/styrene-lab/vox/actions/runs/27425331797` completed successfully.
+- Vox hardening follow-up has been released as `v0.1.5`.
+  - Hardening range: `9491778..1c63414` after tag `v0.1.4`.
+  - Release bump: `c1b1e51 chore(release): bump vox to 0.1.5`
+  - Published release: `https://github.com/styrene-lab/vox/releases/tag/v0.1.5`
+  - Required Linux artifact exists: `vox-0.1.5-x86_64-unknown-linux-musl.tar.gz`
+  - CI: `https://github.com/styrene-lab/vox/actions/runs/27433802518` completed successfully.
+  - Release workflow: `https://github.com/styrene-lab/vox/actions/runs/27433803671` completed successfully.
   - Scope: per-token secret-file permission checks, connector degradation tests, panic removal in startup/tool serialization paths, stale LXMF cfg warning removal, clippy cleanups.
-  - Not released/tagged; Brutus installer remains intentionally pinned to the published `v0.1.4` artifact until a future Vox release is authorized.
-- `auspex` now installs Vox `v0.1.4` for connector agents.
-  - Commit: `63c121f fix(operator): install vox 0.1.4`
+- `auspex` now installs Vox `v0.1.5` for connector agents.
+  - Initial `v0.1.4` installer commit: `63c121f fix(operator): install vox 0.1.4`
+  - Hardened `v0.1.5` installer commit: `b9ae60f fix(operator): install vox 0.1.5`
   - Validation: `cargo test -p auspex-operator` passed, 21 tests.
+  - Latest Auspex operator/web image build on `main` succeeded after the installer update: `https://github.com/styrene-lab/auspex/actions/runs/27449582014`.
 - `omegon` has the host-side SDK/runtime contract implemented and pushed.
   - Commit: `21406271 feat(extensions): bootstrap manifest runtime config`
   - Adds manifest `runtime.config`, `runtime.env`, and `runtime.env_passthrough`.
@@ -56,7 +60,7 @@ Current blocker:
 
 Next authorized deploy step once Omegon owners restore CI and publish an approved runtime image containing `21406271`:
 
-1. Roll `auspex-operator` so generated release-manager pods install Vox `v0.1.4`.
+1. Roll `auspex-operator` so generated release-manager pods install Vox `v0.1.5`.
 2. Update the release-manager runtime image to the approved Omegon image containing `bootstrap_config` support.
 3. Reconcile/restart `OmegonAgent/release-manager`.
 4. Verify logs show Vox loading from the SDK-delivered path, expected:
