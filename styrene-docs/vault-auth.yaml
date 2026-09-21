@@ -13,33 +13,33 @@ spec:
     serviceAccount: styrene-docs
     tokenExpirationSeconds: 600
 ---
-# OIDC client secret (envoy-gateway-styrene Vault role, styrene realm)
+# OIDC client secret (scoped gateway-consumer role, primary Vanderlyn realm)
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
-  name: envoy-gateway-styrene-vault-auth
+  name: envoy-gateway-vault-auth
   namespace: styrene-docs
 spec:
   method: kubernetes
   mount: kubernetes
   vaultConnectionRef: vault-secrets-operator-system/vault-connection
   kubernetes:
-    role: envoy-gateway-styrene
+    role: envoy-gateway-private-consumers
     serviceAccount: default
     tokenExpirationSeconds: 600
 ---
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultStaticSecret
 metadata:
-  name: envoy-gateway-styrene-oidc-secret
+  name: envoy-gateway-oidc-secret
   namespace: styrene-docs
 spec:
-  vaultAuthRef: envoy-gateway-styrene-vault-auth
+  vaultAuthRef: envoy-gateway-vault-auth
   mount: secret
   type: kv-v2
-  path: oidc/envoy-gateway-styrene
+  path: oidc/envoy-gateway
   destination:
-    name: envoy-gateway-styrene-oidc-secret
+    name: envoy-gateway-oidc-secret
     create: true
     transformation:
       excludeRaw: true

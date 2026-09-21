@@ -1,6 +1,4 @@
-# GitHub OIDC gate for docs.styrene.io (styrene realm, public tier)
-# Any GitHub account can authenticate. Metrics collected via Keycloak events.
-# SSO: users already authenticated to any styrene.io service skip login.
+# Primary Vanderlyn identity gate for the contained documentation endpoint.
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
@@ -21,10 +19,10 @@ spec:
       name: docs-styrene
   oidc:
     provider:
-      issuer: https://auth.vanderlyn.house/realms/styrene
-    clientID: envoy-gateway-styrene
+      issuer: https://auth.vanderlyn.house/realms/vanderlyn
+    clientID: envoy-gateway
     clientSecret:
-      name: envoy-gateway-styrene-oidc-secret
+      name: envoy-gateway-oidc-secret
     scopes:
       - openid
       - profile
