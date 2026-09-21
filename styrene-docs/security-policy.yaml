@@ -21,7 +21,7 @@ spec:
       name: docs-styrene
   oidc:
     provider:
-      issuer: https://auth.styrene.io/realms/styrene
+      issuer: https://auth.vanderlyn.house/realms/styrene
     clientID: envoy-gateway-styrene
     clientSecret:
       name: envoy-gateway-styrene-oidc-secret
