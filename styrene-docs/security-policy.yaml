@@ -7,6 +7,14 @@ metadata:
   name: oidc-docs-styrene
   namespace: styrene-docs
 spec:
+  # Route policies replace the Gateway policy; include CrowdSec explicitly.
+  extAuth:
+    failOpen: false
+    grpc:
+      backendRef:
+        name: crowdsec-envoy-bouncer
+        namespace: crowdsec
+        port: 8080
   targetRefs:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
